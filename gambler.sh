@@ -1,18 +1,50 @@
 #!/bin/bash -x
 STAKE=100
 BET=1
+noOfWins=0
+noOfLoss=0
+noOfWinDay=0
+noOfLossDay=0
 dailyStake=$STAKE;
-newStake=$(((STAKE*50)/100))
-while [ $STAKE -gt $((dailyStake-newStake)) ] && [ $STAKE -lt $((dailyStake+newStake)) ]
-do
-	result=$((RANDOM%2))
+percentStake=$(((STAKE*50)/100))
+function betCalculator(){
+	STAKE=100
+	dailyStake=$STAKE
+	percentStake=$(((STAKE*50)/100))
+	while [ $STAKE -gt $((dailyStake-percentStake)) ] && [ $STAKE -lt $((dailyStake+percentStake)) ]
+	do
+		result=$((RANDOM%2))
 
-	if [ $result -eq 1 ]
+		if [ $result -eq 1 ]
+		then
+			STAKE=$((STAKE + BET))
+			((noOfWins++))
+		else
+			STAKE=$((STAKE - BET))
+			((noOfLoss++))
+		fi
+	done
+	if [ $noOfWins -gt $noOfLoss ]
 	then
-		STAKE=$((STAKE + BET))
+		((noOfWinDay++))
 	else
-		STAKE=$((STAKE - BET))
+		((noOfLossDay++))
 	fi
-done
-echo "you have done for the days bet"
+	echo "you have done for the days bet"
+}
 
+function amountCalculator(){
+	if [ $noOfWinDay -gt $noOfLossDay ]
+	then
+		result=$((noOfWinDay*percentStake))
+		echo "amount of individual won is $result"
+	else
+		result=$((noOfLossDay*percentStake))
+		echo "amount of individual lost is $result"
+	fi
+}
+for (( i=0;i<20;i++ ))
+do
+betCalculator
+done
+amountCalculator
