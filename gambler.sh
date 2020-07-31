@@ -8,7 +8,7 @@ noOfLossDay=0
 #arrays
 declare -A winArray
 declare -A lossArray
-count=1
+count=0
 dailyStake=$STAKE;
 percentStake=$(((STAKE*50)/100))
 function betCalculator(){
@@ -57,7 +57,7 @@ function amountCalculator(){
 }
 
 function luckyDayFinder(){
-lucky=${winArray[1]}
+lucky=${winArray[0]}
 for i in ${winArray[@]}
 do
      if [[ $i -gt $lucky ]]
@@ -74,7 +74,7 @@ do
                 echo "the day lucky day was $countj with win of about $lucky times"
         fi
 done
-lucky=${lossArray[1]}
+lucky=${lossArray[0]}
 for i in ${lossArray[@]}
 do
      if [[ $i -gt $lucky ]]
@@ -92,9 +92,31 @@ do
 	fi
 done
 }
+function nextMonthCheck(){
+	if [ $noOfWinDay -gt $noOfLossDay ]
+	then
+		echo "you are eligible for next month also so enter 0 to continue or 1 to stop"
+		read input
+		if [ $input -eq 0 ]
+		then
+			for (( i=0;i<30;i++ ))
+			do
+				betCalculator
+			done
+			amountCalculator
+			luckyDayFinder
+			nextMonthCheck
+		else
+			echo "thanks for playing"
+		fi
+	else
+		echo "you have loss more money plz stop playing for next month"
+	fi
+}
 for (( i=0;i<30;i++ ))
 do
 betCalculator
 done
 amountCalculator
 luckyDayFinder
+nextMonthCheck
