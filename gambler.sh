@@ -37,13 +37,13 @@ function amountCalculator(){
 	if [ $noOfWinDay -gt $noOfLossDay ]
 	then
 		result=$((noOfWinDay*percentStake))
-		echo "amount of individual won is $result"
+		echo "the individual won $noOfWinDay days an amount of $result"
 	else
 		result=$((noOfLossDay*percentStake))
-		echo "amount of individual lost is $result"
+		echo "the individual lost $noOfLossDay days an amount of $result"
 	fi
 }
-for (( i=0;i<20;i++ ))
+for (( i=0;i<30;i++ ))
 do
 betCalculator
 done
