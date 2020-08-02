@@ -1,27 +1,34 @@
 #!/bin/bash -x
+
 #constants
 STAKE=100
 BET=1
+
 #variables
 noOfWinDay=0
 noOfLossDay=0
+count=0
+dailyStake=$STAKE;
+
 #arrays
 declare -A winArray
 declare -A lossArray
-count=0
-dailyStake=$STAKE;
 percentStake=$(((STAKE*50)/100))
+
+#the bet calculator
 function betCalculator(){
 	STAKE=100
 	noOfWins=0
 	noofLoss=0
 	dailyStake=$STAKE
 	percentStake=$(((STAKE*50)/100))
-	while [ $STAKE -gt $((dailyStake-percentStake)) ] && [ $STAKE -lt $((dailyStake+percentStake)) ]
+	lowestStake=$((dailyStake-percentStake))
+	highestStake=$((dailyStake+precentStake))
+	while [ $STAKE -gt $lowestStake ] && [ $STAKE -lt $highestStake ]
 	do
-		result=$((RANDOM%2))
+		betResult=$((RANDOM%2))
 
-		if [ $result -eq 1 ]
+		if [ $betResult -eq 1 ]
 		then
 			STAKE=$((STAKE + BET))
 			((noOfWins++))
@@ -45,6 +52,7 @@ function betCalculator(){
 	echo "you have done for the days bet"
 }
 
+#the total money won calculator
 function amountCalculator(){
 	if [ $noOfWinDay -gt $noOfLossDay ]
 	then
@@ -56,6 +64,7 @@ function amountCalculator(){
 	fi
 }
 
+#the lucky Day finder
 function luckyDayFinder(){
 lucky=${winArray[0]}
 for i in ${winArray[@]}
@@ -92,6 +101,8 @@ do
 	fi
 done
 }
+
+#check for the individual that he can play for next month or not
 function nextMonthCheck(){
 	if [ $noOfWinDay -gt $noOfLossDay ]
 	then
@@ -113,9 +124,11 @@ function nextMonthCheck(){
 		echo "you have loss more money plz stop playing for next month"
 	fi
 }
+
+#main code
 for (( i=0;i<30;i++ ))
 do
-betCalculator
+	betCalculator
 done
 amountCalculator
 luckyDayFinder
